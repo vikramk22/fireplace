@@ -5,6 +5,7 @@ from importlib import import_module
 from pkgutil import iter_modules
 from typing import List
 from xml.etree import ElementTree
+from . hs_ui import HsUI
 
 from hearthstone.enums import CardClass, CardType
 
@@ -182,7 +183,6 @@ def setup_game() -> ".game.Game":
 
 def play_turn(game: ".game.Game") -> ".game.Game":
 	player = game.current_player
-
 	while True:
 		heropower = player.hero.power
 		if heropower.is_usable() and random.random() < 0.1:
@@ -214,7 +214,6 @@ def play_turn(game: ".game.Game") -> ".game.Game":
 		for character in player.characters:
 			if character.can_attack():
 				character.attack(random.choice(character.targets))
-
 		break
 
 	game.end_turn()
@@ -223,6 +222,7 @@ def play_turn(game: ".game.Game") -> ".game.Game":
 
 def play_full_game() -> ".game.Game":
 	game = setup_game()
+	test_ui = HsUI(game);
 
 	for player in game.players:
 		print("Can mulligan %r" % (player.choice.cards))
@@ -230,7 +230,9 @@ def play_full_game() -> ".game.Game":
 		cards_to_mulligan = random.sample(player.choice.cards, mull_count)
 		player.choice.choose(*cards_to_mulligan)
 
+	test_ui.print_gui()
+
 	while True:
 		play_turn(game)
-
+		test_ui.print_gui()
 	return game
